@@ -4,6 +4,7 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
+bytemuck = {version = "1.13.1", features = ["derive"]}
 cfg-if = "1" # Allows for platform-specific ease
 
 # WGPU panics silently if logging isn't enabled via `env_logger::init();`

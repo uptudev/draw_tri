@@ -1,3 +1,4 @@
+use wgpu::util::DeviceExt;
 use winit::{
     event::*,
     event_loop::{ControlFlow, EventLoop},
@@ -103,12 +104,16 @@ struct State {
     size:       winit::dpi::PhysicalSize<u32>,
     window:     Window,
     render_pipeline: wgpu::RenderPipeline,
+    vertex_buffer: wgpu::Buffer,
+    num_verts: u32,
 }
 
 impl State {
     // Creating some of the wgpu types requires async
     async fn new(window: Window) -> Self {
         let size = window.inner_size();
+        
+        let num_verts = VERTS.len() as u32;
 
         // The instance is the GPU handle
         // Backends::all => Vulkan + Metal + DX12 + Browser WebGPU
@@ -188,8 +193,10 @@ impl State {
                 vertex: wgpu::VertexState { 
                     module: &shader, 
                     entry_point: "vs_main", 
-                    buffers: &[],
-                    },
+                    buffers: &[
+                        Vertex::desc(),
+                    ],
+                },
                 fragment: Some(wgpu::FragmentState { 
                     module: &shader, 
                     entry_point: "fs_main", 
@@ -218,6 +225,14 @@ impl State {
             }
         );
 
+        let vertex_buffer = device.create_buffer_init(
+            &wgpu::util::BufferInitDescriptor {
+                label: Some("Vertex Buffer"),
+                contents: bytemuck::cast_slice(VERTS),
+                usage: wgpu::BufferUsages::VERTEX,
+            }
+        );
+
         surface.configure(&device, &config);
 
         Self {
@@ -228,6 +243,8 @@ impl State {
             config,
             size,
             render_pipeline,
+            vertex_buffer,
+            num_verts,
         }
 }
 
@@ -244,7 +261,7 @@ impl State {
         }
     }
 
-    fn input(&mut self, event: &WindowEvent) -> bool {
+    fn input(&mut self, _event: &WindowEvent) -> bool {
         false //TODO change this once events need handling
     }
 
@@ -286,7 +303,8 @@ impl State {
         );
 
         render_pass.set_pipeline(&self.render_pipeline);
-        render_pass.draw(0..3, 0..1);
+        render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+        render_pass.draw(0..self.num_verts, 0..1);
 
         // `begin_render_pass()` borrows encoder mutably.
         // `encoder.finish()` cannot be called until the borrow is released.
@@ -299,3 +317,38 @@ impl State {
         Ok(())
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
+struct Vertex {
+    position: [f32; 3],
+    color: [f32; 3],
+}
+
+impl Vertex {
+    const ATTRIBS: [wgpu::VertexAttribute; 2] =
+        wgpu::vertex_attr_array![0 => Float32x3, 1 => Float32x3];
+
+    fn desc<'a>() -> wgpu::VertexBufferLayout<'a> {
+        wgpu::VertexBufferLayout { 
+            array_stride: std::mem::size_of::<Vertex>() as wgpu::BufferAddress, 
+            step_mode: wgpu::VertexStepMode::Vertex, 
+            attributes: &Self::ATTRIBS,
+        }
+    }
+}
+
+const VERTS: &[Vertex] =  &[
+    Vertex {
+        position:   [0.0, 0.5, 0.0],
+        color:      [1.0, 0.0, 0.0],
+    },
+    Vertex {
+        position:   [-0.5, -0.5, 0.0],
+        color:      [0.0, 1.0, 0.0],
+    },
+    Vertex {
+        position:   [0.5, -0.5, 0.0],
+        color:      [0.0, 0.0, 1.0],
+    },
+];
