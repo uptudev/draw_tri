@@ -1,0 +1,45 @@
+[package]
+name = "draw_tri"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+cfg-if = "1" # Allows for platform-specific ease
+
+# WGPU panics silently if logging isn't enabled via `env_logger::init();`
+env_logger = "0.10.0"
+log = "0.4.17"
+
+# I need an async runtime and tokio is unparalleled (get it)
+tokio = {version = "1", features = ["full"]}
+
+# WGPU & WInit for GFX processing and window creation
+wgpu = "0.15.1"
+winit = "0.28.3"
+
+# Creates inner WGPU-based library to deploy to a static library
+# cdylib is a C/C++ compatible library for WASM deployments
+# rlib is a native Rust static library for desktop deployments
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# Dependencies for WASM builds; uses cfg-if in tag for brevity
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# Send panic errors to the JS console
+console_error_panic_hook = "0.1.7"
+console_log = "1.0.0" # Implements the log API for the JS console
+
+# Enable WebGL
+wgpu = {version = "0.15.1", features = ["webgl"]}
+
+# Generates boilerplate code to expose Rust functions to JS and vice versa
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4.34"
+
+# Imports basic JS-esque calls like `get_element_by_id`, etc
+web-sys = {version = "0.3", features = [
+	"Document",
+	"Window",
+	"Event",
+]}
+
