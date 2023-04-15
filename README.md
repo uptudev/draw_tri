@@ -1,1 +1,7 @@
 # draw_tri
+
+This is an example of the utter masochism that comes with being a graphics programmer, and is the reason why I use the `bevy` crate so faithfully when I need to make games. Yes, WebGPU is wonderful as a graphics API, but in no way is this boilerplate necessary for the simple act of drawing a triangle, and this could easily be done in OpenGL if not for needing WASM support.
+
+And at the end of the day, I ended up so overwhelmed by the sheer amount of boilerplate that the concepts behind graphics programming became secondary to dealing with the butterfly effect from minor errors in the tutorial code. If you want to make a desktop game, just do it in raw OpenGL or Vulkan if you need that level of control, or just use frameworks like [Bevy](https://github.com/bevyengine/bevy) which abstract away all the boilerplate of window creation and binding while keeping the WGSL shader format and WASM support (since it uses `wgpu` as its backend as well). All of what I wrote here can be just brought down to a simple `App::new()` call in Bevy, and I can only see myself attempting to delve into this code again (after actually learning the concepts) in order to finish my abandoned port of [a ray-marching fractal engine](https://github.com/uptudev/r_march) which I was intimidated out of attempting.
+
+However, at the end of the day I drew a goddamn triangle in raw wgpu, a feat I deemed unattainable a week ago. We'll see.
