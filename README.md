@@ -1,7 +1,34 @@
 # draw_tri
 
-This is an example of the utter masochism that comes with being a graphics programmer, and is the reason why I use the `bevy` crate so faithfully when I need to make games. Yes, WebGPU is wonderful as a graphics API, but in no way is this boilerplate necessary for the simple act of drawing a triangle, and this could easily be done in OpenGL if not for needing WASM support.
+This project uses the wgpu crate to draw a triangle with basic UV shading to the screen. It is compilable to WASM to be run in a canvas.
 
-And at the end of the day, I ended up so overwhelmed by the sheer amount of boilerplate that the concepts behind graphics programming became secondary to dealing with the butterfly effect from minor errors in the tutorial code. If you want to make a desktop game, just do it in raw OpenGL or Vulkan if you need that level of control, or just use frameworks like [Bevy](https://github.com/bevyengine/bevy) which abstract away all the boilerplate of window creation and binding while keeping the WGSL shader format and WASM support (since it uses `wgpu` as its backend as well). All of what I wrote here can be just brought down to a simple `App::new()` call in Bevy, and I can only see myself attempting to delve into this code again (after actually learning the concepts) in order to finish my abandoned port of [a ray-marching fractal engine](https://github.com/uptudev/r_march) which I was intimidated out of attempting.
+## Getting Started
 
-However, at the end of the day I drew a goddamn triangle in raw wgpu, a feat I deemed unattainable a week ago. We'll see.
+To get started, clone the repository and install the dependencies:
+```
+git clone https://github.com/[your-username]/rust-triangle.git
+cd rust-triangle
+cargo install --dependencies web
+```
+
+## Running the Project
+
+To run the project, run the following command:
+```
+cargo run --target=wasm32-unknown-unknown
+```
+
+This will open a web browser window with the triangle rendered in a canvas.
+
+## Features
+
+This project demonstrates the following features:
+
+* Using the `wgpu` crate to draw a triangle
+* Applying basic UV shading to a triangle
+* Compiling a Rust project to WASM to be run in a canvas
+
+## Further Reading
+
+* [The `wgpu` crate documentation](https://docs.rs/wgpu/)
+* [The WebGPU specification](https://www.khronos.org/webgpu/)
