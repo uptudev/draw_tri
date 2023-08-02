@@ -6,8 +6,8 @@ This project uses the wgpu crate to draw a triangle with basic UV shading to the
 
 To get started, clone the repository and install the dependencies:
 ```
-git clone https://github.com/[your-username]/rust-triangle.git
-cd rust-triangle
+git clone https://github.com/uptudev/draw_tri.git
+cd draw_tri
 cargo install --dependencies web
 ```
 
